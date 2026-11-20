@@ -198,3 +198,27 @@ generateBtn.addEventListener("click", generate);
 // ===== 初期化（読み込み時に生成） =====
 syncLength(lengthRange);
 generate();
+
+// ===== テーマ切り替え（表示のみ。生成・保存には一切関与しない） =====
+(function initTheme() {
+  var root = document.documentElement;
+  if (!root || !root.getAttribute || !root.setAttribute) return;
+  function apply(theme) {
+    root.setAttribute("data-theme", theme);
+    var btn = document.getElementById("themeToggle");
+    if (btn) btn.textContent = theme === "light" ? "☀️" : "🌙";
+  }
+  var current = root.getAttribute("data-theme");
+  if (current !== "light" && current !== "dark") {
+    try { current = localStorage.getItem("pasuya-theme"); } catch (e) { current = null; }
+  }
+  apply(current === "light" ? "light" : "dark");
+  var btn = document.getElementById("themeToggle");
+  if (btn && btn.addEventListener) {
+    btn.addEventListener("click", function () {
+      var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+      apply(next);
+      try { localStorage.setItem("pasuya-theme", next); } catch (e) { /* 保存できなくても切り替え自体は有効 */ }
+    });
+  }
+})();

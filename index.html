@@ -5,20 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ぱすや｜パスワード生成</title>
 <meta name="description" content="暗号学的に安全な乱数でパスワードを生成するツール。何も保存・送信せず、履歴も残しません。">
-<meta name="theme-color" content="#4338ca">
+<meta name="theme-color" content="#0a0f1c">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
+<script>
+try {
+  var savedTheme = localStorage.getItem("pasuya-theme");
+  if (savedTheme === "light" || savedTheme === "dark") {
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  }
+} catch (e) { /* テーマ保存が使えない環境ではダークを既定にする */ }
+</script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header class="site-header">
-  <h1>ぱすや</h1>
-  <p class="tagline">パスワード生成</p>
-  <p class="privacy-note">生成したパスワードは<strong>どこにも保存・送信されません</strong>。履歴も残しません。すべての処理はこの端末のブラウザ内だけで行われます。</p>
+<nav class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="#top">ぱすや</a>
+    <span class="topbar-links">
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="テーマ切り替え">🌙</button>
+    </span>
+  </div>
+</nav>
+
+<header class="site-header" id="top">
+  <div class="wrap">
+    <h1>ぱすや</h1>
+    <p class="tagline">パスワード生成</p>
+    <p class="privacy-note">生成したパスワードは<strong>どこにも保存・送信されません</strong>。履歴も残しません。すべての処理はこの端末のブラウザ内だけで行われます。</p>
+  </div>
 </header>
 
-<main>
+<main class="wrap">
   <section class="card">
     <h2>設定</h2>
 
@@ -78,7 +97,7 @@
   </section>
 </main>
 
-<footer class="site-footer">
+<footer class="site-footer wrap">
   <p>ぱすや — 何も保存・送信しません。履歴も残しません。</p>
 </footer>
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = "pasuya-v1";
+const CACHE_NAME = "pasuya-v2";
 const CORE = [
   "./",
   "./index.html",
