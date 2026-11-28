@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ぱすや｜パスワード生成</title>
+<meta name="description" content="暗号学的に安全な乱数でパスワードを生成するツール。何も保存・送信せず、履歴も残しません。">
+<meta name="theme-color" content="#0a0f1c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<script>
+try {
+  var savedTheme = localStorage.getItem("pasuya-theme");
+  if (savedTheme === "light" || savedTheme === "dark") {
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  }
+} catch (e) { /* テーマ保存が使えない環境ではダークを既定にする */ }
+</script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!-- 🧭 トップバー -->
+<nav class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="#top">ぱすや</a>
+    <span class="topbar-links">
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="テーマ切り替え">🌙</button>
+    </span>
+  </div>
+</nav>
+
+<!-- 🏠 ヘッダー -->
+<header class="site-header" id="top">
+  <div class="wrap">
+    <h1>ぱすや</h1>
+    <p class="tagline">パスワード生成</p>
+    <p class="privacy-note">生成したパスワードは<strong>どこにも保存・送信されません</strong>。履歴も残しません。すべての処理はこの端末のブラウザ内だけで行われます。</p>
+  </div>
+</header>
+
+<!-- 📄 メイン -->
+<main class="wrap">
+  <section class="card">
+    <h2>設定</h2>
+
+    <div class="length-row">
+      <label for="lengthRange">長さ</label>
+      <input id="lengthRange" type="range" min="8" max="64" step="1" value="16">
+      <input id="lengthNumber" type="number" min="8" max="64" step="1" value="16" aria-label="長さ（数値入力）">
+      <span class="note-inline">文字（8〜64）</span>
+    </div>
+
+    <fieldset class="sets">
+      <legend>使う文字の種類</legend>
+      <label class="check"><input type="checkbox" id="setLower" checked> 小文字 <span class="sample">abc…z</span></label>
+      <label class="check"><input type="checkbox" id="setUpper" checked> 大文字 <span class="sample">ABC…Z</span></label>
+      <label class="check"><input type="checkbox" id="setDigits" checked> 数字 <span class="sample">012…9</span></label>
+      <label class="check"><input type="checkbox" id="setSymbols" checked> 記号 <span class="sample">!@#$%^&amp;*()-_=+[]{}|;:,.&lt;&gt;?/</span></label>
+    </fieldset>
+
+    <label class="check">
+      <input type="checkbox" id="excludeAmbiguous">
+      紛らわしい文字を除外する
+      <span class="sample">除外対象: 0（ゼロ）/ O（大文字オー）/ 1（いち）/ l（小文字エル）/ I（大文字アイ）/ |（縦線）</span>
+    </label>
+
+    <div class="count-row">
+      <label for="countSelect">生成する個数</label>
+      <select id="countSelect">
+        <option value="1">1個</option>
+        <option value="3">3個</option>
+        <option value="5" selected>5個</option>
+        <option value="10">10個</option>
+      </select>
+    </div>
+
+    <p class="entropy" aria-live="polite">エントロピー: <strong id="entropyValue">—</strong> <span id="entropyNote" class="note-inline"></span></p>
+    <p class="note">エントロピーは「長さ × log₂（文字プールの大きさ）」で計算した目安です。プールが大きいほど、長さが長いほど大きくなります。</p>
+    <p id="errorMsg" class="error" role="alert" aria-live="polite"></p>
+
+    <div class="actions">
+      <button id="generateBtn" class="btn btn-primary" type="button">生成する</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>生成結果</h2>
+    <ul id="resultList" class="result-list"></ul>
+    <p id="emptyMsg" class="note">文字の種類を1つ以上選んでください。</p>
+    <p id="copyMsg" class="note" aria-live="polite"></p>
+    <p class="note">各候補の「コピー」ボタンでクリップボードにコピーできます。ページを閉じたり再読み込みしたりすると、表示中のパスワードは消えます（保存されません）。</p>
+  </section>
+
+  <section class="card">
+    <h2>安全性について</h2>
+    <p>乱数にはブラウザの暗号学的乱数 <code>crypto.getRandomValues</code> のみを使い、偏りが出ないよう棄却サンプリング（rejection sampling）で文字を選んでいます。<code>Math.random</code> は使っていません。</p>
+    <p>選択した文字種が複数ある場合、長さが許す限り、各文字種から最低1文字ずつ含めるように生成します。</p>
+    <p>生成したパスワード・設定はサーバーへ送信されず、<code>localStorage</code> 等にも保存されません。履歴機能はありません。</p>
+  </section>
+</main>
+
+<!-- 📎 フッター -->
+<footer class="site-footer wrap">
+  <p>ぱすや — 何も保存・送信しません。履歴も残しません。</p>
+</footer>
+
+<script src="js/password-core.js"></script>
+<script src="app.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

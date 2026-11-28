@@ -1,0 +1,1 @@
+{"description":"ぱすや｜パスワード生成","name":"pasuya","private":true,"scripts":{"check":"node --check app.js && node --check js/password-core.js && node --check sw.js","test":"node --test tests/*.test.js"},"version":"1.0.0"}
